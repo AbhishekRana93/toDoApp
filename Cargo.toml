@@ -1,0 +1,8 @@
+[package]
+name = "multi_thread"
+version = "0.1.0"
+authors = ["Abhishek <abhishekrana1993@yahoo.in>"]
+
+[dependencies]
+rand = "0.6"
+
