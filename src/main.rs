@@ -16,7 +16,7 @@ impl<'a> Producer<'a> {
 
         let handle = thread::spawn(move|| {
             loop {
-                thread::sleep_ms(500);
+                thread::sleep_ms(800);
 
                 let (ref count, ref condvar) = *count_clone;
                 let mut count = count.lock().unwrap();
@@ -51,8 +51,6 @@ impl<'a> Consumer<'a> {
 
         let handle = thread::spawn(move|| {
             loop {
-                println!("{:?} {:?}", "buffer in consumer", "inside");
-
                 thread::sleep_ms(1000);
 
                 let (ref count, ref condvar) = *count_clone;
@@ -66,7 +64,6 @@ impl<'a> Consumer<'a> {
                     println!("{:?} {:?}", "buffer in consumer", *buffer);
                     condvar.notify_one();
                 } else {
-                    println!("{:?} {:?}", "buffer in consumer", "waiting");
                     let mut count = condvar.wait(count).unwrap();
                 }
             }
@@ -85,6 +82,11 @@ fn main() {
         buffer : &buffer,
     };
 
+    let prod2 = Producer {
+        count_pair : &count_pair,
+        buffer : &buffer,
+    };
+
     let cons1 = Consumer {
         count_pair : &count_pair,
         buffer : &buffer,
@@ -95,11 +97,15 @@ fn main() {
         buffer : &buffer,
     };
 
-    let prod_handle = prod1.produce();
+    let prod_handle1 = prod1.produce();
+    let prod_handle2 = prod2.produce();
+
     let cons_handle = cons1.consume();
     let cons_handle2 = cons2.consume();
 
-    prod_handle.join().unwrap();
+    prod_handle1.join().unwrap();
+    prod_handle2.join().unwrap();
+
     cons_handle.join().unwrap();
     cons_handle2.join().unwrap();
 
