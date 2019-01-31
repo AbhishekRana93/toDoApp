@@ -2,6 +2,7 @@
 name = "multi_thread"
 version = "0.1.0"
 authors = ["Abhishek <abhishekrana1993@yahoo.in>"]
+edition = "2018"
 
 [dependencies]
 rand = "0.6"
